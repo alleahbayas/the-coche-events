@@ -14,7 +14,7 @@ export default function Header() {
     
     return (
         <header className={`fixed inset-x-0 top-0 z-50 text-white transition-colors duration-300 ${
-           solid ? 'bg-[#231f1a]' : 'bg-transparent'}`}>
+           solid ? 'bg-[#26221C]' : 'bg-transparent'}`}>
             <nav className="mx-auto flex max-w-7xl items-center justify-between px-8 py-4">
                 <img src={logo} alt="The Coche Events" className="h-4 w-auto"/>
 

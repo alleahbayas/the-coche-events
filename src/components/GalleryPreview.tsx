@@ -59,8 +59,6 @@ export default function GalleryPreview() {
     return () => clearInterval(id)
   }, [paused, current])
 
-  const realIndex = (current - 1 + galleryImages.length) % galleryImages.length
-
   return (
     <div
       className="mt-10 overflow-hidden py-10"

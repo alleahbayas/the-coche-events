@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import slide1 from '../assets/slide1.png'
 import slide2 from '../assets/slide2.png'
 import slide3 from '../assets/slide3.png'
 
-const slides = [
+const realSlides = [
   {
     image: slide1,
     title: 'Welcome',
@@ -25,25 +25,80 @@ const slides = [
   },
 ]
 
-export default function Hero() {
-  const [current, setCurrent] = useState(0)
+// Add a clone of the last slide at the start, and a clone of the first slide at the end
+const slides = [realSlides[realSlides.length - 1], ...realSlides, realSlides[0]]
 
-  const prev = () => setCurrent((current - 1 + slides.length) % slides.length)
-  const next = () => setCurrent((current + 1) % slides.length)
+export default function Hero() {
+  const [current, setCurrent] = useState(1) 
+  const [paused, setPaused] = useState(false)
+  const [smooth, setSmooth] = useState(true)
+  const isJumping = useRef(false)
+
+  const next = () => {
+    if (isJumping.current) return
+    setSmooth(true)
+    setCurrent((c) => c + 1)
+  }
+
+  const prev = () => {
+    if (isJumping.current) return
+    setSmooth(true)
+    setCurrent((c) => c - 1)
+  }
+
+  const goTo = (realIndex: number) => {
+    if (isJumping.current) return
+    setSmooth(true)
+    setCurrent(realIndex + 1) // +1 because of the clone at the start
+  }
+
+  // After the slide animation finishes, silently snap from a clone to the real slide
+  const handleTransitionEnd = () => {
+    if (current === slides.length - 1) {
+      // landed on the cloned first slide -> jump to the real first slide
+      isJumping.current = true
+      setSmooth(false)
+      setCurrent(1)
+    } else if (current === 0) {
+      // landed on the cloned last slide -> jump to the real last slide
+      isJumping.current = true
+      setSmooth(false)
+      setCurrent(realSlides.length)
+    }
+  }
+
+  // Clear the jump lock shortly after the instant snap happens
+  useEffect(() => {
+    if (!smooth) {
+      const id = setTimeout(() => {
+        isJumping.current = false
+      }, 50)
+      return () => clearTimeout(id)
+    }
+  }, [smooth])
+
+  useEffect(() => {
+    if (paused) return
+    const id = setInterval(next, 3000)
+    return () => clearInterval(id)
+  }, [paused, current])
+
+  const realIndex = (current - 1 + realSlides.length) % realSlides.length
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black text-white">
+    <section
+      className="relative h-screen w-full overflow-hidden bg-black text-white"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       {/* The moving row of slides */}
       <div
-        className="flex h-full transition-transform duration-700 ease-in-out"
+        onTransitionEnd={handleTransitionEnd}
+        className={`flex h-full ${smooth ? 'transition-transform duration-700 ease-in-out' : ''}`}
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {slides.map((slide, i) => (
-          <div
-            key={i}
-            aria-hidden={i !== current}
-            className="relative h-full w-full shrink-0"
-          >
+          <div key={i} className="relative h-full w-full shrink-0">
             <img
               src={slide.image}
               alt=""
@@ -55,11 +110,11 @@ export default function Hero() {
               <h2 className="font-tenor text-[90px] uppercase tracking-wide">
                 {slide.title}
               </h2>
-              <p className="font-poppins font-[200] text-[16px] max-w-sm text-sm uppercase tracking-widest">
+              <p className="max-w-sm font-poppins text-[16px] font-[200] text-sm uppercase tracking-widest">
                 {slide.subtitle}
               </p>
               {slide.button && (
-                <button className="mt-6 rounded-full font-poppins text-[14px] border border-white border-2 px-10 py-3 text-xs uppercase tracking-[3px] hover:bg-white hover:text-[#343434] hover:text-[500] transition-colors">
+                <button className="mt-6 rounded-full border-2 border-white px-10 py-3 font-poppins text-[14px] text-xs uppercase tracking-[3px] transition-colors hover:bg-white hover:text-[#343434] hover:text-[500]">
                   {slide.button}
                 </button>
               )}
@@ -86,13 +141,13 @@ export default function Hero() {
 
       {/* Dots */}
       <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-4">
-        {slides.map((_, i) => (
+        {realSlides.map((_, i) => (
           <button
             key={i}
-            onClick={() => setCurrent(i)}
+            onClick={() => goTo(i)}
             aria-label={`Go to slide ${i + 1}`}
             className={`h-3 w-3 rounded-full border border-white transition-colors duration-500 ${
-              i === current ? 'bg-white' : 'bg-transparent'
+              i === realIndex ? 'bg-white' : 'bg-transparent'
             }`}
           />
         ))}

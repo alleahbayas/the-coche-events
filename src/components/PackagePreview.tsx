@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import valentine from '../assets/valentine.jpg'
 import custom from '../assets/custom.png'
 import birthday from '../assets/birthday.jpeg'
@@ -54,9 +55,12 @@ export default function PackagePreview() {
             </span>
           </h2>
 
-          <button className="mt-8 rounded-md bg-[#26221C] px-12 py-3 text-sm font-medium font-body text-rose-200 transition-colors duration-300 hover:bg-[#9F8365] hover:text-white">
+          <Link
+            to="/services"
+            className="mt-5 inline-block rounded-md bg-[#26221C] px-12 py-3 text-sm font-medium font-body text-rose-200 transition-colors duration-300 hover:bg-[#9F8365] hover:text-white"
+            >
             See Packages
-          </button>
+          </Link>
         </div>
       </div>
     </section>

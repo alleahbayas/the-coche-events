@@ -1,6 +1,7 @@
 import logoDark from '../assets/logo-dark.svg'
 import watermark from '../assets/watermark.svg'
 import GalleryPreview from './GalleryPreview'
+import { Link } from 'react-router-dom'
 
 const watermarks = [
   { left: '-15%', top: '3vw' },
@@ -42,9 +43,11 @@ export default function Intro() {
           <em className="font-accent font-bold italic tracking-tight">confines</em> of a car
         </h2>
 
-        <button className="mt-8 rounded-md border-2 border-[#26221C] px-8 py-2 font-body text-sm font-semibold transition-colors duration-300 hover:bg-[#26221C] hover:text-white">
+        <Link 
+          to="/gallery"
+          className="mt-8 rounded-md border-2 border-[#26221C] px-8 py-2 font-body text-sm font-semibold transition-colors duration-300 hover:bg-[#26221C] hover:text-white">
           View Gallery
-        </button>
+        </Link>
       </div>
 
       <div className="relative z-10 -mt-10">

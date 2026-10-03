@@ -20,6 +20,36 @@
   }
 }
 
+@keyframes scroll-up {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes scroll-down {
+  0% {
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-scroll-up {
+  animation-name: scroll-up;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.animate-scroll-down {
+  animation-name: scroll-down;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient-move 8s ease-in-out infinite;

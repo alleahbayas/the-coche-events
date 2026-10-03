@@ -1,18 +1,21 @@
+import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
-import Hero from './pages/Hero'
-import Intro from './components/Intro'
-import PackagePreview from './components/PackagePreview'
-import Cesta from './components/CestaSection'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
+import Home from './pages/Home'
+import Services from './pages/Services'
+import Gallery from './pages/Gallery'
 
 export default function App() {
   return (
     <div>
+      <ScrollToTop />
       <Header />
-      <Hero />
-      <Intro />
-      <PackagePreview />
-      <Cesta />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/gallery" element={<Gallery />} />
+      </Routes>
       <Footer />
     </div>
   )
